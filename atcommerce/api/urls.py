@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework import routers
-from .dashboard import DashboardViewSet
+from .dashboard import DashboardViewSet, CustomerViewSet, ProductViewSet
 
 """
 This is our api gateway which provides interaction
@@ -10,5 +10,7 @@ rows in the database
 
 router = routers.SimpleRouter()
 router.register(r'dashboard', DashboardViewSet)
+router.register(r'customers', CustomerViewSet)
+router.register(r'products', ProductViewSet)
 
 urlpatterns = router.urls
