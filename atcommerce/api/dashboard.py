@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, serializers
 from rest_framework.response import Response
 from .models import Eorders, Product, Customer
+from datetime import datetime, timedelta
 
 class DashboardSerializer(serializers.ModelSerializer):
     class Meta:
@@ -43,14 +44,12 @@ class DashboardViewSet(viewsets.ModelViewSet):
 
     And be able to update Transactions
     """
-    queryset = Eorders.objects.all()
+
+    # Order by the past 24 hours
+    queryset = Eorders.objects.filter(order_date__gt=datetime.now() - timedelta(days=1)).order_by('-order_date')
     serializer_class = DashboardSerializer
 
     def list(self, request):
-        queryset = Eorders.objects.all()
+        queryset = self.queryset
         serializer = DashboardSerializer(queryset, many=True)
         return Response(serializer.data)
-
-    def create(self, request):
-        """ Admin should be able to create orders """
-
