@@ -54,3 +54,9 @@ class Eorders(models.Model):
     # product price in Product table
     purchase_amount = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
     order_date = models.DateTimeField()
+
+class Records(models.Model):
+    uploaded_by = models.CharField(max_length=80)
+    description = models.CharField(max_length=255, blank=True)
+    file = models.FileField(upload_to='records/')
+    uploaded_date = models.DateTimeField(auto_now_add=True)
