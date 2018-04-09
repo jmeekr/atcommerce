@@ -21,6 +21,7 @@ from django.db import models
 """
 
 class Product(models.Model):
+    id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=100)
     description = models.TextField()
 
@@ -28,6 +29,7 @@ class Product(models.Model):
         return self.name
 
 class Customer(models.Model):
+    id = models.IntegerField(primary_key=True)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     street_address = models.CharField(max_length=80)
