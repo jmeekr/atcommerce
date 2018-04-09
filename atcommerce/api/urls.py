@@ -15,6 +15,5 @@ router.register(r'dashboard', DashboardViewSet)
 router.register(r'customers', CustomerViewSet)
 router.register(r'products', ProductViewSet)
 urlpatterns = [path(r'upload', upload_file)]
-#urlpatterns = [path(r'upload', FileUploadView.as_view())]
 
 urlpatterns += router.urls

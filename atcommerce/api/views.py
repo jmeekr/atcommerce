@@ -1,7 +1,7 @@
-from django.shortcuts import render
-
+from django.shortcuts import render, reverse
 from django import forms
 from django.db import models
+
 from .models import Customer, Product, Eorders, Records
 
 from dateutil import parser
@@ -81,6 +81,12 @@ class FileParser:
                 # and we should try to update it
                 # This was replaced from create_or_update because of an error
                 # with the syntax
+
+                exists.purchase_status = row_dict.get('purchase_status')
+                exists.purchase_amount = row_dict.get('purchase_amount')
+                exists.order_date = row_dict.get('order_date')
+                exists.save()
+                print('updated record')
 
             except Eorders.DoesNotExist:
                 print('records does not exist... create it')
