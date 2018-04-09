@@ -69,18 +69,30 @@ class FileParser:
             # same product, we don't get a new id for that transaction
             # so we can also use the datetime for that interaction
             # Say person A buys item I every Monday
-            eorder, created = Eorders.objects.update_or_create(
-                product__id = row_dict.get('product__id'),
-                customer__id = row_dict.get('customer__id'),
-                order_date = row_dict.get('order_date'),
-                defaults = {
-                    'customer' : cust,
-                    'product' : prod,
-                    'purchase_status' : row_dict.get('purchase_status'),
-                    'purchase_amount' : row_dict.get('purchase_amount'),
-                    #'order_date' : row_dict.get('order_date')
-                }
-            )
+            # Unfortunately we cannot make this assumption based on the
+            # order_date because cancellations happen in the future
+            try:
+                exists = Eorders.objects.get(
+                   (models.Q(product__id = prod.id) &
+                    models.Q(customer__id = cust.id)),
+                )
+
+                # If it does not throw an Exception it exists,
+                # and we should try to update it
+                # This was replaced from create_or_update because of an error
+                # with the syntax
+
+            except Eorders.DoesNotExist:
+                print('records does not exist... create it')
+                eorder = Eorders.objects.create(
+                    product = prod,
+                    customer= cust,
+                    #order_date = row_dict.get('order_date'),
+                    purchase_status = row_dict.get('purchase_status'),
+                    purchase_amount = row_dict.get('purchase_amount'),
+                    order_date = row_dict.get('order_date')
+                )
+                print('created record')
 
 def upload_file(request):
     form = RecordForms()
@@ -91,8 +103,6 @@ def upload_file(request):
         file_name = file_.name
         description = request.POST.get('description')
         if file_:
-            import ipdb
-            ipdb.set_trace()
             file_parser = FileParser(file_)
             file_parser.parse_file()
 
